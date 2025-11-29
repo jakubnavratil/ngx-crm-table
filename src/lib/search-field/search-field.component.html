@@ -1,0 +1,28 @@
+<button
+  pButton
+  pRipple
+  label="Hledat"
+  i18n-label
+  icon="pi pi-search"
+  class="p-button-plain p-button-sm p-button-text"
+  [class.!hidden]="inputVisible"
+  (click)="showInput()"
+></button>
+
+<span class="p-input-icon-right" [class.hidden]="!inputVisible">
+  <span class="p-input-icon-left">
+    <i class="pi pi-search"></i>
+    <input
+      type="text"
+      #searchInput
+      placeholder="Hledat"
+      i18n-placeholder
+      pInputText
+      class="p-inputtext-sm"
+      style="padding-right: 2rem"
+      (blur)="onBlur()"
+      [(ngModel)]="value"
+    />
+  </span>
+  <i class="pi pi-times" (click)="clearValue()"></i>
+</span>

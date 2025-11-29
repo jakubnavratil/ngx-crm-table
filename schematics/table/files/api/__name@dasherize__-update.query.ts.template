@@ -1,0 +1,11 @@
+import { gql } from 'apollo-angular';
+import <%= camelize(name) %>FragmentQuery from './<%= dasherize(name) %>-fragment.query';
+
+export default gql`
+  mutation <%= gqlObject(name) %>Update($input: UpdateOne<%= api %>Input!) {
+    updateOne<%= api %>(input: $input) {
+      ...<%= gqlObject(name) %>Fragment
+    }
+  }
+  ${<%= camelize(name) %>FragmentQuery}
+`;

@@ -1,0 +1,10 @@
+{
+  "$schema": "../../../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "client": {
+      "description": "Add table to the project",
+      "factory": "./table/index#client",
+      "schema": "./table/schema.json"
+    }
+  }
+}

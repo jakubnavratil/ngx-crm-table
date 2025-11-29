@@ -1,0 +1,33 @@
+import { Component, OnInit } from '@angular/core';
+import {
+  CrudTableColumn,
+  CrudTableService,
+  FilterGroup,
+  FilterRuleType,
+} from '@livesoft/ngx-crm-table';
+import { <%= classify(name) %>Service } from './<%= dasherize(name) %>.service';
+
+@Component({
+  selector: 'app-<%= dasherize(plural) %>',
+  templateUrl: './<%= dasherize(plural) %>.component.html',
+  styleUrls: ['./<%= dasherize(plural) %>.component.scss'],
+  providers: [
+    {
+      provide: CrudTableService,
+      useExisting: <%= classify(name) %>Service,
+    },
+  ],
+})
+export class <%= classify(plural) %>Component implements OnInit {
+  columns: CrudTableColumn[] = [
+    {
+      field: 'id',
+      header: 'ID',
+      styleClass: 'w-24',
+      filterable: FilterRuleType.NUMBER,
+    },<% for(let prop of props) { %>
+    { field: '<%= prop %>', header: '<%= capitalize(prop) %>' },<% } %>
+  ];
+
+  ngOnInit(): void {}
+}

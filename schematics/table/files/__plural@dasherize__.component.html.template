@@ -1,0 +1,5 @@
+<ls-table [columns]="columns" label="<%= classify(plural) %>">
+  <ng-template #detailView let-id>
+    <app-<%= dasherize(name) %>-detail [id]="id" class="detail-sidebar-content"></app-<%= dasherize(name) %>-detail>
+  </ng-template>
+</ls-table>

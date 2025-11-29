@@ -1,0 +1,11 @@
+import { NgModule } from '@angular/core';
+import { SharedModule } from '../../../shared/shared.module';
+import { <%= classify(plural) %>RoutingModule } from './<%= dasherize(plural) %>-routing.module';
+import { <%= classify(plural) %>Component } from './<%= dasherize(plural) %>.component';
+import { <%= classify(name) %>DetailComponent } from './<%= dasherize(name) %>-detail/<%= dasherize(name) %>-detail.component';
+
+@NgModule({
+  declarations: [<%= classify(plural) %>Component, <%= classify(name) %>DetailComponent],
+  imports: [SharedModule, <%= classify(plural) %>RoutingModule],
+})
+export class <%= classify(plural) %>Module {}

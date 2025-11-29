@@ -1,0 +1,24 @@
+import gql from 'graphql-tag';
+import <%= camelize(name) %>FragmentQuery from './<%= dasherize(name) %>-fragment.query';
+
+export default gql`
+  query <%= gqlObject(plural) %>(
+    $filter: <%= api %>Filter
+    $paging: OffsetPaging
+    $sorting: [<%= api %>Sort!]
+    $customSort: [CustomSort!]
+  ) {
+    <%= apiMethod(apiPlural) %>(
+      filter: $filter
+      paging: $paging
+      sorting: $sorting
+      customSort: $customSort
+    ) {
+      totalCount
+      nodes {
+        ...<%= gqlObject(name) %>Fragment
+      }
+    }
+  }
+  ${<%= camelize(name) %>FragmentQuery}
+`;

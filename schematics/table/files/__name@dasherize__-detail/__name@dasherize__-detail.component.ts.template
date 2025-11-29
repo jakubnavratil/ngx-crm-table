@@ -1,0 +1,35 @@
+import { Component, inject } from '@angular/core';
+import {
+  ExtractFormDataLib,
+  FormGroupControls,
+  TableDetailComponent,
+} from '@livesoft/ngx-crm-table';
+import { <%= classify(name) %>Service } from '../<%= dasherize(name) %>.service';
+
+type FormData = ExtractFormDataLib<<%= classify(name) %>Service>;
+
+@Component({
+  selector: 'app-<%= dasherize(name) %>-detail',
+  templateUrl: './<%= dasherize(name) %>-detail.component.html',
+  styleUrls: ['./<%= dasherize(name) %>-detail.component.scss'],
+})
+export class <%= classify(name) %>DetailComponent extends TableDetailComponent<
+<%= classify(name) %>Service,
+FormData
+> {
+  readonly service = inject(<%= classify(name) %>Service);
+
+  createForm() {
+    return this.fb.group({<% for(let prop of props) { %>
+      <%= prop %>: this.fb.control<string | null>(null, []),<% } %>
+    });
+  }
+
+  fillForm() {
+    return this.parseDetail((detail) => {
+      return {<% for(let prop of props) { %>
+        <%= prop %>: detail.<%= prop %> ?? null,<% } %>
+      };
+    });
+  }
+}

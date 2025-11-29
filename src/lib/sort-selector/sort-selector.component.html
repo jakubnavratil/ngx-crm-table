@@ -1,0 +1,13 @@
+<div class="flex flex-col">
+  <div class="flex flex-col space-y-2 mb-4">
+    @for (itemContainer of itemContainers; track itemContainer) {
+      <ls-sort-selector-item [fields]="fields || []"
+        (remove)="removeItem(itemContainer)" [(ngModel)]="itemContainer.item" (ngModelChange)="updateSort()">
+      </ls-sort-selector-item>
+    }
+  </div>
+  <div class="flex flex-row spacey-y-2">
+    <button pButton pRipple class="p-button-sm p-button-text" label="Řazení" icon="pi pi-plus"
+    (click)="addItem()"></button>
+  </div>
+</div>

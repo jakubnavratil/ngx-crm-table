@@ -1,0 +1,55 @@
+<div class="flex flex-col flex-1 -m-4">
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="px-8 pb-2 pt-4 border-b">
+      <h2 class="font-semibold text-2xl">
+        <ng-container *ngIf="id; else newHeadline">Úprava záznamu</ng-container>
+        <ng-template #newHeadline>Nový záznam</ng-template>
+      </h2>
+    </div>
+
+    <p-tabView class="flex-1 flex-tabs">
+      <p-tabPanel header="Informace" leftIcon="pi pi-info-circle">
+        <div class="p-fluid p-formgrid p-grid" [formGroup]="form">
+
+          <% for(let prop of props) {
+          %><div class="p-field p-col-12">
+            <label for="<%= prop %>"><%= capitalize(prop) %></label>
+            <input type="text" pInputText id="<%= prop %>" formControlName="<%= prop %>">
+          </div>
+          <% } %>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+
+  </div>
+
+  <div class="detail-footer flex flex-row py-2 px-4 border-t gap-2">
+    <button
+      pButton
+      pRipple
+      severity="secondary"
+      [outlined]="true"
+      (click)="close()"
+    >
+      Zavřít
+    </button>
+    <button
+      pButton
+      pRipple
+      label="Smazat"
+      icon="pi pi-trash"
+      [outlined]="true"
+      class="p-button-danger"
+      (click)="delete()"
+    ></button>
+    <span class="flex-1"></span>
+    <button
+      pButton
+      pRipple
+      label="Uložit"
+      icon="pi pi-check"
+      class=""
+      (clickLoading)="$event(save())"
+    ></button>
+  </div>
+</div>

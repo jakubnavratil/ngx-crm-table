@@ -1,0 +1,9 @@
+import { gql } from 'apollo-angular';
+
+export default gql`
+  mutation <%= gqlObject(name) %>Delete($input: DeleteOne<%= api %>Input!) {
+    deleteOne<%= api %>(input: $input) {
+      id
+    }
+  }
+`;

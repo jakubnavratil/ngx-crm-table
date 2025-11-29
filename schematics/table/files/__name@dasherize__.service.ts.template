@@ -1,0 +1,153 @@
+import { Injectable } from '@angular/core';
+import { CrudTableService } from '@livesoft/ngx-crm-table';
+import { Apollo, QueryRef } from 'apollo-angular';
+import {
+  Create<%= api %>,
+  SortDirection,
+  <%= api %>SortFields,
+  Update<%= api %>,
+} from '../../../api/types';
+import <%= camelize(name) %>CreateQuery from './api/<%= dasherize(name) %>-create.query';
+import <%= camelize(name) %>DeleteQuery from './api/<%= dasherize(name) %>-delete.query';
+import <%= camelize(name) %>UpdateQuery from './api/<%= dasherize(name) %>-update.query';
+import <%= camelize(name) %>Query from './api/<%= dasherize(name) %>.query';
+import <%= camelize(plural) %>Query from './api/<%= dasherize(plural) %>.query';
+import { <%= gqlObject(name) %>Query, <%= gqlObject(name) %>QueryVariables } from './api/generated/<%= dasherize(name) %>.query.type';
+import { <%= gqlObject(name) %>CreateMutation, <%= gqlObject(name) %>CreateMutationVariables } from './api/generated/<%= dasherize(name) %>-create.query.type';
+import { <%= gqlObject(name) %>DeleteMutation, <%= gqlObject(name) %>DeleteMutationVariables } from './api/generated/<%= dasherize(name) %>-delete.query.type';
+import { <%= gqlObject(name) %>UpdateMutation, <%= gqlObject(name) %>UpdateMutationVariables } from './api/generated/<%= dasherize(name) %>-update.query.type';
+import { <%= gqlObject(plural) %>Query, <%= gqlObject(plural) %>QueryVariables } from './api/generated/<%= dasherize(plural) %>.query.type';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class <%= classify(name) %>Service extends CrudTableService<
+  <%= gqlObject(plural) %>Query,
+  <%= gqlObject(plural) %>QueryVariables,
+  <%= gqlObject(plural) %>Query['<%= apiMethod(apiPlural) %>'],
+  <%= gqlObject(name) %>Query,
+  <%= gqlObject(name) %>QueryVariables,
+  <%= gqlObject(name) %>CreateMutation,
+  <%= gqlObject(name) %>CreateMutationVariables,
+  <%= gqlObject(name) %>UpdateMutation,
+  <%= gqlObject(name) %>UpdateMutationVariables,
+  <%= gqlObject(name) %>DeleteMutation,
+  <%= gqlObject(name) %>DeleteMutationVariables,
+  NonNullable<<%= gqlObject(name) %>Query['<%= apiMethod(api) %>']>,
+  <%= gqlObject(name) %>CreateMutationVariables['input']['<%= apiMethod(api) %>'],
+  <%= gqlObject(name) %>UpdateMutationVariables['input']['update']
+> {
+  fetchQuery = <%= camelize(plural) %>Query;
+  detailQuery = <%= camelize(name) %>Query;
+  createQuery = <%= camelize(name) %>CreateQuery;
+  updateQuery = <%= camelize(name) %>UpdateQuery;
+  deleteQuery = <%= camelize(name) %>DeleteQuery;
+
+  constructor(apollo: Apollo) {
+    super(apollo);
+
+    this.setCreateOptimisticUpdate((store, { data }) => {
+      const newItem = data?.createOne<%= api %>;
+      if (newItem == null) {
+        return;
+      }
+
+      const cachedData = store.readQuery<<%= gqlObject(plural) %>Query, <%= gqlObject(plural) %>QueryVariables>({
+        query: this.fetchQuery,
+        variables: this.lastVariables,
+      });
+      if (cachedData == null) {
+        return;
+      }
+
+      const queryResult = cachedData.<%= apiMethod(apiPlural) %>;
+      const newResult = {
+        ...queryResult,
+        totalCount: queryResult.totalCount + 1,
+        nodes: [newItem, ...queryResult.nodes],
+      };
+      store.writeQuery<<%= gqlObject(plural) %>Query, <%= gqlObject(plural) %>QueryVariables>({
+        query: this.fetchQuery,
+        data: { <%= apiMethod(apiPlural) %>: newResult },
+        variables: this.lastVariables,
+      });
+    });
+
+    this.setDeleteOptimisticUpdate((record) => (store, { data }) => {
+      if (data == null) {
+        return;
+      }
+
+      const cachedData = store.readQuery<<%= gqlObject(plural) %>Query, <%= gqlObject(plural) %>QueryVariables>({
+        query: this.fetchQuery,
+        variables: this.lastVariables,
+      });
+      if (cachedData == null) {
+        return;
+      }
+
+      const queryResult = cachedData.<%= apiMethod(apiPlural) %>;
+      const newResult = {
+        ...queryResult,
+        totalCount: queryResult.totalCount - 1,
+        nodes: [
+          ...queryResult.nodes.filter((i) => String(i.id) !== record.input.id),
+        ],
+      };
+      store.writeQuery<<%= gqlObject(plural) %>Query, <%= gqlObject(plural) %>QueryVariables>({
+        query: this.fetchQuery,
+        data: { <%= apiMethod(apiPlural) %>: newResult },
+        variables: this.lastVariables,
+      });
+    });
+  }
+
+  listSelector(response: <%= gqlObject(plural) %>Query) {
+    return response.<%= apiMethod(apiPlural) %>;
+  }
+
+  override detailSelector(response: <%= gqlObject(name) %>Query) {
+    return response.<%= apiMethod(api) %>;
+  }
+
+  override createSelector(response: <%= gqlObject(name) %>CreateMutation) {
+    return response.createOne<%= api %>;
+  }
+
+  override createInputVariables(
+    data: Create<%= api %>
+  ): <%= gqlObject(name) %>CreateMutationVariables {
+    return { input: { <%= apiMethod(api) %>: data } };
+  }
+
+  override updateSelector(response: <%= gqlObject(name) %>UpdateMutation) {
+    return response.updateOne<%= api %>;
+  }
+
+  override updateInputVariables(
+    id: string,
+    update: Update<%= api %>
+  ): <%= gqlObject(name) %>UpdateMutationVariables {
+    return { input: { id, update } };
+  }
+
+  autocomplete(search: string): QueryRef<<%= gqlObject(plural) %>Query, <%= gqlObject(plural) %>QueryVariables> {
+    return this.apollo.watchQuery<<%= gqlObject(plural) %>Query, <%= gqlObject(plural) %>QueryVariables>({
+      query: <%= camelize(plural) %>Query,
+      variables: {
+        filter: {
+          name: { like: `%${search}%` },
+        },
+        paging: {
+          limit: 20,
+        },
+        sorting: [
+          {
+            field: <%= api %>SortFields.name,
+            direction: SortDirection.ASC,
+          },
+        ],
+      },
+    });
+  }
+}

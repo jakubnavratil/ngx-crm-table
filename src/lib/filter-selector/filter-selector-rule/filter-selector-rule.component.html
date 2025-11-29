@@ -1,0 +1,80 @@
+<div class="flex flex-row pr-2">
+  <div class="flex flex-row space-x-1 flex-1">
+    <p-dropdown
+      [options]="fields || []"
+      [(ngModel)]="selectedField"
+      placeholder="Sloupec"
+      i18n-placeholder
+      optionLabel="label"
+      styleClass="w-44"
+    >
+    </p-dropdown>
+
+    @if (
+      selectedField?.type !== FilterRuleType.BOOLEAN &&
+      (selectedField == null || selectedFieldConfig?.disableOperators !== true)
+    ) {
+      <p-dropdown
+        [options]="operators"
+        [(ngModel)]="selectedOperator"
+        placeholder="Operátor"
+        i18n-placeholder
+        optionLabel="label"
+        styleClass="w-36"
+      >
+      </p-dropdown>
+    }
+
+    @if (selectedField) {
+      @if (selectedFieldConfig != null) {
+        <ng-container
+          *ngTemplateOutlet="
+            selectedFieldConfig.template;
+            context: { $implicit: value, updateValue: updateValue }
+          "
+        >
+        </ng-container>
+      } @else {
+        @switch (selectedField.type) {
+          @case (FilterRuleType.TEXT) {
+            @if (!selectedOperator?.valueHidden) {
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="value"
+                placeholder="Text"
+              />
+            }
+          }
+          @case (FilterRuleType.BOOLEAN) {
+            <p-selectButton
+              [options]="booleanOptions"
+              [(ngModel)]="value"
+              optionLabel="label"
+              optionValue="value"
+            />
+          }
+          @case (FilterRuleType.NUMBER) {
+            @if (!selectedOperator?.valueHidden) {
+              <p-inputNumber [(ngModel)]="value" placeholder="Číslo" />
+            }
+          }
+          @case (FilterRuleType.DATE) {
+            <p-calendar [(ngModel)]="value" placeholder="Datum" />
+          }
+          @default {
+            Chybějící implementace.
+          }
+        }
+      }
+    }
+  </div>
+  <div class="ml-auto">
+    <button
+      pButton
+      icon="pi pi-times"
+      class="p-button-danger p-button-text p-button-sm ml-2"
+      (click)="remove.emit()"
+    ></button>
+  </div>
+</div>

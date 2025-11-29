@@ -1,0 +1,8 @@
+import { gql } from 'apollo-angular';
+
+export default gql`
+  fragment <%= gqlObject(name) %>Fragment on <%= api %> {
+    id<% for(let prop of props) { %>
+    <%= prop %><% } %>
+  }
+`;

@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "TableSchematics",
+  "title": "Table Schema",
+  "type": "object",
+  "description": "Generates a new resource service, table and detail",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the resource.",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use for this resource incl path (plural, e.g., \"src/app/Users\")?"
+    },
+    "api": {
+      "type": "string",
+      "description": "The api endpoint.",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What api to use (plural, e.g., \"users\")?"
+    },
+    "gqlprefix": {
+      "type": "string",
+      "description": "The prefix describing module in graphql schema",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "Define GQL prefix (e.g., \"Mobile\")?"
+    },
+    "props": {
+      "type": "string",
+      "description": "Properties(comma separated) to fetch, show and edit",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "Define props to fetch, show, edit (e.g., \"name,surname\")?"
+    }
+  }
+}
