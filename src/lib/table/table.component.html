@@ -1,34 +1,32 @@
 <ng-template #tableTemplate>
   <div class="mt-2"></div>
   @if (showHeader) {
-    <div
-      class="flex-none flex flex-row justify-between items-center p-4 pb-2 border-b mx-5"
-    >
-      <div class="flex flex-col">
-        <h2 class="font-semibold text-2xl">{{ label }}</h2>
-        <!-- <input type="text" placeholder="Add coversation title" -->
-        <!-- class="text-sm outline-none border-b border-dashed text-black placeholder-gray-600" /> -->
-      </div>
+  <div
+    class="flex-none flex flex-row justify-between items-center p-4 pb-2 border-b mx-5"
+  >
+    <div class="flex flex-col">
+      <h2 class="font-semibold text-2xl">{{ label }}</h2>
+      <!-- <input type="text" placeholder="Add coversation title" -->
+      <!-- class="text-sm outline-none border-b border-dashed text-black placeholder-gray-600" /> -->
     </div>
+  </div>
   }
   <div class="flex-none flex flex-row justify-between mx-5 py-4">
     <div class="flex flex-row flex-1">
       <div class="flex flex-row space-x-2 ml-4 flex-1">
         @if (!disableCreate) {
-          <button
-            pButton
-            pRipple
-            [label]="newRecordLabel"
-            icon="pi pi-plus"
-            class="p-button-primary p-button-sm"
-            (click)="openNew()"
-          ></button>
-        }
-
-        @if (headerLeft) {
-          <ng-container
-            *ngTemplateOutlet="headerLeft; context: { $implicit: null }"
-          ></ng-container>
+        <button
+          pButton
+          pRipple
+          [label]="newRecordLabel"
+          icon="pi pi-plus"
+          class="p-button-primary p-button-sm"
+          (click)="openNew()"
+        ></button>
+        } @if (headerLeft) {
+        <ng-container
+          *ngTemplateOutlet="headerLeft; context: { $implicit: null }"
+        ></ng-container>
         }
 
         <button
@@ -41,108 +39,98 @@
         ></button>
 
         @if (header) {
-          <ng-container
-            *ngTemplateOutlet="header; context: { $implicit: null }"
-          ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="header; context: { $implicit: null }"
+        ></ng-container>
         }
 
         <!-- <span class="flex-1"></span> -->
 
         <ls-search-field [(ngModel)]="fulltext"></ls-search-field>
 
-        @if (allowFilter) {
-          @if (filterRulesCount === 0) {
-            <button
-              pButton
-              label="Filtrovat"
-              i18n-label
-              icon="pi pi-filter"
-              pTooltip="Pokročilá filtrace"
-              i18n-pTooltip
-              tooltipPosition="top"
-              class="p-button-sm p-button-plain p-button-text"
-              (click)="filterPanel.toggle($event)"
-            ></button>
-          } @else {
-            <button
-              pButton
-              label="Filtrovat"
-              i18n-label
-              icon="pi pi-filter"
-              pBadge
-              [value]="filterRulesCount + ''"
-              [severity]="$any('secondary')"
-              pTooltip="Pokročilá filtrace"
-              i18n-pTooltip
-              tooltipPosition="top"
-              class="p-button-sm p-button-outlined relative"
-              (click)="filterPanel.toggle($event)"
-            ></button>
-          }
-        }
-
-        @if (allowSort) {
-          @if (!sort || sort.length === 0) {
-            <button
-              pButton
-              label="Řadit"
-              i18n-label
-              icon="pi pi-sort-alt"
-              pTooltip="Volby řazení"
-              i18n-pTooltip
-              tooltipPosition="top"
-              class="p-button-sm p-button-plain p-button-text"
-              (click)="sortPanel.toggle($event)"
-            ></button>
-          } @else {
-            <button
-              pButton
-              label="Řadit"
-              i18n-label
-              icon="pi pi-sort-alt"
-              pBadge
-              [value]="sort?.length + ''"
-              [severity]="$any('secondary')"
-              pTooltip="Volby řazení"
-              i18n-pTooltip
-              tooltipPosition="top"
-              class="p-button-sm p-button-outlined relative"
-              (click)="sortPanel.toggle($event)"
-            ></button>
-          }
-        }
-
-        @if (expandable && showExpansionButtons) {
-          @if ((expandAll$ | async) === false) {
-            <button
-              pButton
-              pRipple
-              icon="pi pi-plus"
-              pTooltip="Rozbalit vše"
-              label="Rozbalit vše"
-              i18n-label
-              i18n-pTooltip
-              tooltipPosition="top"
-              class="p-button-plain p-button-sm p-button-text"
-              (click)="expandAll()"
-            ></button>
-          }
-          @if ((expandAll$ | async) === true) {
-            <button
-              pButton
-              pRipple
-              icon="pi pi-minus"
-              pTooltip="Sbalit vše"
-              [severity]="$any('secondary')"
-              label="Sbalit vše"
-              i18n-label
-              i18n-pTooltip
-              tooltipPosition="top"
-              class="p-button-outlined p-button-sm"
-              (click)="collapseAll()"
-            ></button>
-          }
-        }
+        @if (allowFilter) { @if (filterRulesCount === 0) {
+        <button
+          pButton
+          label="Filtrovat"
+          i18n-label
+          icon="pi pi-filter"
+          pTooltip="Pokročilá filtrace"
+          i18n-pTooltip
+          tooltipPosition="top"
+          class="p-button-sm p-button-plain p-button-text"
+          (click)="filterPanel.toggle($event)"
+        ></button>
+        } @else {
+        <button
+          pButton
+          label="Filtrovat"
+          i18n-label
+          icon="pi pi-filter"
+          pBadge
+          [value]="filterRulesCount + ''"
+          [severity]="$any('secondary')"
+          pTooltip="Pokročilá filtrace"
+          i18n-pTooltip
+          tooltipPosition="top"
+          class="p-button-sm p-button-outlined relative"
+          (click)="filterPanel.toggle($event)"
+        ></button>
+        } } @if (allowSort) { @if (!sort || sort.length === 0) {
+        <button
+          pButton
+          label="Řadit"
+          i18n-label
+          icon="pi pi-sort-alt"
+          pTooltip="Volby řazení"
+          i18n-pTooltip
+          tooltipPosition="top"
+          class="p-button-sm p-button-plain p-button-text"
+          (click)="sortPanel.toggle($event)"
+        ></button>
+        } @else {
+        <button
+          pButton
+          label="Řadit"
+          i18n-label
+          icon="pi pi-sort-alt"
+          pBadge
+          [value]="sort?.length + ''"
+          [severity]="$any('secondary')"
+          pTooltip="Volby řazení"
+          i18n-pTooltip
+          tooltipPosition="top"
+          class="p-button-sm p-button-outlined relative"
+          (click)="sortPanel.toggle($event)"
+        ></button>
+        } } @if (expandable && showExpansionButtons) { @if ((expandAll$ | async)
+        === false) {
+        <button
+          pButton
+          pRipple
+          icon="pi pi-plus"
+          pTooltip="Rozbalit vše"
+          label="Rozbalit vše"
+          i18n-label
+          i18n-pTooltip
+          tooltipPosition="top"
+          class="p-button-plain p-button-sm p-button-text"
+          (click)="expandAll()"
+        ></button>
+        } @if ((expandAll$ | async) === true) {
+        <button
+          pButton
+          pRipple
+          icon="pi pi-minus"
+          pTooltip="Sbalit vše"
+          [severity]="$any('secondary')"
+          label="Sbalit vše"
+          i18n-label
+          i18n-pTooltip
+          tooltipPosition="top"
+          class="p-button-outlined p-button-sm"
+          (click)="collapseAll()"
+        ></button>
+        } }
 
         <!-- <button pButton pRipple icon="pi pi-paperclip" pTooltip="Připnout sloupce" tooltipPosition="top"
     class="p-button-plain p-button-sm p-button-text"></button>
@@ -162,9 +150,9 @@
         ></button>
 
         @if (headerRight) {
-          <ng-container
-            *ngTemplateOutlet="headerRight; context: { $implicit: null }"
-          ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="headerRight; context: { $implicit: null }"
+        ></ng-container>
         }
       </div>
     </div>
@@ -309,29 +297,24 @@
       <ng-template pTemplate="header">
         <tr>
           @if (selectable) {
-            <th class="w-14">
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
-          }
-          @if (expandable) {
-            <th class="w-14"></th>
-          }
-          @for (col of columns; track col) {
-            @if (!col.hidden) {
-              <th
-                [class]="col.styleClass"
-                [pSortableColumn]="col.field"
-                [pSortableColumnDisabled]="!isColumnSortable(col)"
-                pResizableColumn
-                [pResizableColumnDisabled]="false"
-              >
-                {{ col.header }}
-                <p-sortIcon [field]="col.field"></p-sortIcon>
-              </th>
-            }
-          }
-          @if (fillColumn) {
-            <th></th>
+          <th class="w-14">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          } @if (expandable) {
+          <th class="w-14"></th>
+          } @for (col of columns; track col) { @if (!col.hidden) {
+          <th
+            [class]="col.styleClass"
+            [pSortableColumn]="col.field"
+            [pSortableColumnDisabled]="!isColumnSortable(col)"
+            pResizableColumn
+            [pResizableColumnDisabled]="false"
+          >
+            {{ col.header }}
+            <p-sortIcon [field]="col.field"></p-sortIcon>
+          </th>
+          } } @if (fillColumn) {
+          <th></th>
           }
         </tr>
       </ng-template>
@@ -345,91 +328,81 @@
           }"
         >
           @if (selectable) {
-            <td class="w-14">
-              <p-tableCheckbox [value]="item"></p-tableCheckbox>
-            </td>
-          }
-          @if (expandable) {
-            <td class="p-2">
-              @if (
-                (canShowRowExpansionButton != null &&
-                  canShowRowExpansionButton(item)) ||
-                (canShowRowExpansionButton == null &&
-                  (rowHasExpansionItems == null || rowHasExpansionItems(item)))
-              ) {
-                <button
-                  type="button"
-                  pButton
-                  pRipple
-                  [pRowToggler]="item"
-                  class="p-button-text p-button-rounded p-button-plain"
-                  size="small"
-                  [icon]="
-                    expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'
-                  "
-                ></button>
-              }
-            </td>
-          }
-          @if (!tableBodyCols) {
-            @for (col of columns; track col; let first = $first) {
-              @if (first && defaultActionEnabled) {
-                <td
-                  [class]="col.styleClass"
-                  [class.actions-cell]="true"
-                  (click)="editRow(item)"
-                >
-                  {{ item | deepValue: col.field }}
-                  <div
-                    class="actions-container"
-                    [class.actions-visible]="defaultActionAlwaysVisible"
-                  >
-                    <button
-                      type="button"
-                      pButton
-                      pRipple
-                      size="small"
-                      [icon]="defaultItemActionIcon"
-                      class="p-button-rounded p-button-primary {{
-                        defaultItemActionClass
-                      }}"
-                      (click)="editRow(item)"
-                    ></button>
-                  </div>
-                </td>
-              } @else {
-                <td
-                  [class]="col.styleClass"
-                  [class.actions-cell]="col.action != null"
-                  (click)="col.action ? col.action(item) : false"
-                >
-                  @if (getColumnDefByName(col.field); as columnDef) {
-                    <ng-container
-                      *ngTemplateOutlet="
-                        columnDef.template;
-                        context: { $implicit: item }
-                      "
-                    ></ng-container>
-                  } @else {
-                    {{ item | deepValue: col.field }}
-                  }
-                  @if (col.action) {
-                    <div class="actions-container">
-                      <button
-                        type="button"
-                        pButton
-                        pRipple
-                        size="small"
-                        [icon]="col.actionIcon ?? ''"
-                        [class]="col.actionStyleClass"
-                        (click)="col.action(item)"
-                      ></button>
-                    </div>
-                  }
-                </td>
-              }
+          <td class="w-14">
+            <p-tableCheckbox [value]="item"></p-tableCheckbox>
+          </td>
+          } @if (expandable) {
+          <td class="p-2">
+            @if ( (canShowRowExpansionButton != null &&
+            canShowRowExpansionButton(item)) || (canShowRowExpansionButton ==
+            null && (rowHasExpansionItems == null ||
+            rowHasExpansionItems(item))) ) {
+            <button
+              type="button"
+              pButton
+              pRipple
+              [pRowToggler]="item"
+              class="p-button-text p-button-rounded p-button-plain"
+              size="small"
+              [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+            ></button>
             }
-          }
+          </td>
+          } @if (!tableBodyCols) { @for (col of columns; track col; let first =
+          $first) { @if (first && defaultActionEnabled) {
+          <td
+            [class]="col.styleClass"
+            [class.actions-cell]="true"
+            (click)="editRow(item)"
+          >
+            {{ item | deepValue : col.field }}
+            <div
+              class="actions-container"
+              [class.actions-visible]="defaultActionAlwaysVisible"
+            >
+              <button
+                type="button"
+                pButton
+                pRipple
+                size="small"
+                [icon]="defaultItemActionIcon"
+                class="p-button-rounded p-button-primary {{
+                  defaultItemActionClass
+                }}"
+                (click)="editRow(item)"
+              ></button>
+            </div>
+          </td>
+          } @else {
+          <td
+            [class]="col.styleClass"
+            [class.actions-cell]="col.action != null"
+            (click)="col.action ? col.action(item) : false"
+          >
+            @if (getColumnDefByName(col.field); as columnDef) {
+            <ng-container
+              *ngTemplateOutlet="
+                columnDef.template;
+                context: { $implicit: item }
+              "
+            ></ng-container>
+            } @else {
+            {{ item | deepValue : col.field }}
+            } @if (col.action) {
+            <div class="actions-container">
+              <button
+                type="button"
+                pButton
+                pRipple
+                size="small"
+                [icon]="col.actionIcon ?? ''"
+                [class]="col.actionStyleClass"
+                (click)="col.action(item)"
+              ></button>
+            </div>
+            }
+          </td>
+          } } }
           <ng-container
             *ngTemplateOutlet="
               tableBodyCols;
@@ -438,35 +411,33 @@
           >
           </ng-container>
           @if (fillColumn) {
-            <td></td>
+          <td></td>
           }
         </tr>
       </ng-template>
 
       @if (expandable && expansionTemplate) {
-        <ng-template pTemplate="rowexpansion" let-row>
-          <tr class="row-expansion">
-            <ng-container
-              *ngTemplateOutlet="
-                expansionTemplate;
-                context: { $implicit: row, columnCount: columnCount }
-              "
-            ></ng-container>
-          </tr>
-        </ng-template>
-      }
-
-      @if (groupRowsBy && groupHeaderTemplate) {
-        <ng-template pTemplate="groupheader" let-row>
-          <tr pRowGroupHeader class="bg-gray-100">
-            <ng-container
-              *ngTemplateOutlet="
-                groupHeaderTemplate;
-                context: { $implicit: row, columnCount: columnCount }
-              "
-            ></ng-container>
-          </tr>
-        </ng-template>
+      <ng-template pTemplate="rowexpansion" let-row>
+        <tr class="row-expansion">
+          <ng-container
+            *ngTemplateOutlet="
+              expansionTemplate;
+              context: { $implicit: row, columnCount: columnCount }
+            "
+          ></ng-container>
+        </tr>
+      </ng-template>
+      } @if (groupRowsBy && groupHeaderTemplate) {
+      <ng-template pTemplate="groupheader" let-row>
+        <tr pRowGroupHeader class="bg-gray-100">
+          <ng-container
+            *ngTemplateOutlet="
+              groupHeaderTemplate;
+              context: { $implicit: row, columnCount: columnCount }
+            "
+          ></ng-container>
+        </tr>
+      </ng-template>
       }
     </p-table>
   </div>
@@ -582,102 +553,87 @@
 ></p-contextMenu>
 
 @if (view === "sidebar" || view === "dialog") {
-  <ng-container *ngTemplateOutlet="tableTemplate"></ng-container>
+<ng-container *ngTemplateOutlet="tableTemplate"></ng-container>
 } @else if (view === "splitview") {
-  <p-splitter
-    class="h-full"
-    styleClass="h-full !border-none !rounded-none"
-    gutterSize="8"
-    [panelSizes]="[70, 30]"
-    [minSizes]="[0, 25]"
-    [stateKey]="splitviewKey"
-  >
-    <ng-template pTemplate>
-      <div class="flex flex-col flex-1 h-full min-h-0 max-w-full">
-        <ng-container *ngTemplateOutlet="tableTemplate"></ng-container>
-      </div>
-    </ng-template>
-    <ng-template pTemplate>
-      <div
-        class="flex flex-col flex-1 h-full min-h-0 p-4 [&>*]:min-h-0 [&>*]:flex-1"
+<p-splitter
+  class="h-full"
+  styleClass="h-full !border-none !rounded-none"
+  [gutterSize]="8"
+  [panelSizes]="[70, 30]"
+  [minSizes]="[0, 25]"
+  [stateKey]="splitviewKey"
+>
+  <ng-template pTemplate>
+    <div class="flex flex-col flex-1 h-full min-h-0 max-w-full">
+      <ng-container *ngTemplateOutlet="tableTemplate"></ng-container>
+    </div>
+  </ng-template>
+  <ng-template pTemplate>
+    <div
+      class="flex flex-col flex-1 h-full min-h-0 p-4 [&>*]:min-h-0 [&>*]:flex-1"
+    >
+      @if (showDetail) {
+      <ng-container
+        *ngTemplateOutlet="
+          (selectedDetail && detailViewUpdate) ||
+            (!selectedDetail && detailViewCreate) ||
+            detailView;
+          context: { $implicit: selectedDetail?.id || null }
+        "
       >
-        @if (showDetail) {
-          <ng-container
-            *ngTemplateOutlet="
-              (selectedDetail && detailViewUpdate) ||
-                (!selectedDetail && detailViewCreate) ||
-                detailView;
-              context: { $implicit: selectedDetail?.id || null }
-            "
-          >
-          </ng-container>
-        } @else {
-          <div
-            class="flex flex-col justify-center text-center text-4xl text-gray-300 font-bold"
-          >
-            Vyberte záznam
-          </div>
-        }
+      </ng-container>
+      } @else {
+      <div
+        class="flex flex-col justify-center text-center text-4xl text-gray-300 font-bold"
+      >
+        Vyberte záznam
       </div>
-    </ng-template>
-  </p-splitter>
-}
-
-@if (
-  (view === "sidebar" || view === "dialog") &&
-  ((showDetail &&
-    !selectedDetail &&
-    (detailTypeCreate === "sidebar" ||
-      (detailTypeCreate == null && view === "sidebar"))) ||
-    (selectedDetail &&
-      (detailTypeUpdate === "sidebar" ||
-        (detailTypeUpdate == null && view === "sidebar"))))
-) {
-  <p-sidebar
-    [(visible)]="showDetail"
-    position="right"
-    styleClass="!w-4/12 detail-sidebar {{ sidebarStyleClass }}"
-    [modal]="false"
-    #sidebar
-    [baseZIndex]="10"
+      }
+    </div>
+  </ng-template>
+</p-splitter>
+} @if ( (view === "sidebar" || view === "dialog") && ((showDetail &&
+!selectedDetail && (detailTypeCreate === "sidebar" || (detailTypeCreate == null
+&& view === "sidebar"))) || (selectedDetail && (detailTypeUpdate === "sidebar"
+|| (detailTypeUpdate == null && view === "sidebar")))) ) {
+<p-sidebar
+  [(visible)]="showDetail"
+  position="right"
+  styleClass="!w-4/12 detail-sidebar {{ sidebarStyleClass }}"
+  [modal]="false"
+  #sidebar
+  [baseZIndex]="10"
+>
+  <ng-container
+    *ngTemplateOutlet="
+      (selectedDetail && detailViewUpdate) ||
+        (!selectedDetail && detailViewCreate) ||
+        detailView;
+      context: { $implicit: selectedDetail?.id || null, sidebar: sidebar }
+    "
   >
-    <ng-container
-      *ngTemplateOutlet="
-        (selectedDetail && detailViewUpdate) ||
-          (!selectedDetail && detailViewCreate) ||
-          detailView;
-        context: { $implicit: selectedDetail?.id || null, sidebar: sidebar }
-      "
-    >
-    </ng-container>
-  </p-sidebar>
-}
-
-@if (
-  (showDetail &&
-    !selectedDetail &&
-    (detailTypeCreate === "dialog" ||
-      (detailTypeCreate == null && view === "dialog"))) ||
-  (selectedDetail &&
-    (detailTypeUpdate === "dialog" ||
-      (detailTypeUpdate == null && view === "dialog")))
-) {
-  <p-dialog
-    [(visible)]="showDetail"
-    [style]="dialogStyle"
-    styleClass="detail-dialog"
-    contentStyleClass="flex"
-    #dialog
-    [maximizable]="true"
+  </ng-container>
+</p-sidebar>
+} @if ( (showDetail && !selectedDetail && (detailTypeCreate === "dialog" ||
+(detailTypeCreate == null && view === "dialog"))) || (selectedDetail &&
+(detailTypeUpdate === "dialog" || (detailTypeUpdate == null && view ===
+"dialog"))) ) {
+<p-dialog
+  [(visible)]="showDetail"
+  [style]="dialogStyle"
+  styleClass="detail-dialog"
+  contentStyleClass="flex"
+  #dialog
+  [maximizable]="true"
+>
+  <ng-container
+    *ngTemplateOutlet="
+      (selectedDetail && detailViewUpdate) ||
+        (!selectedDetail && detailViewCreate) ||
+        detailView;
+      context: { $implicit: selectedDetail?.id || null, dialog: dialog }
+    "
   >
-    <ng-container
-      *ngTemplateOutlet="
-        (selectedDetail && detailViewUpdate) ||
-          (!selectedDetail && detailViewCreate) ||
-          detailView;
-        context: { $implicit: selectedDetail?.id || null, dialog: dialog }
-      "
-    >
-    </ng-container>
-  </p-dialog>
+  </ng-container>
+</p-dialog>
 }

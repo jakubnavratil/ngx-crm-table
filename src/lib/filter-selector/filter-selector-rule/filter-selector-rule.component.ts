@@ -7,11 +7,11 @@ import {
   OnDestroy,
   OnInit,
   Output,
-} from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Subject, Subscription } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-import { TableMetadata } from '../../table/table-metadata';
+} from "@angular/core";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { Subject, Subscription } from "rxjs";
+import { debounceTime } from "rxjs/operators";
+import { TableMetadata } from "../../table/table-metadata";
 import {
   FilterComparator,
   FilterOperator,
@@ -19,7 +19,7 @@ import {
   FilterRuleField,
   FilterRuleSimple,
   FilterRuleType,
-} from '../types';
+} from "../types";
 
 interface FilterRuleOperator {
   label: string;
@@ -34,9 +34,9 @@ interface FieldOperatorCombination {
 }
 
 @Component({
-  selector: 'ls-filter-selector-rule',
-  templateUrl: './filter-selector-rule.component.html',
-  styleUrls: ['./filter-selector-rule.component.scss'],
+  selector: "ls-filter-selector-rule",
+  templateUrl: "./filter-selector-rule.component.html",
+  styleUrls: ["./filter-selector-rule.component.scss"],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -82,7 +82,7 @@ export class FilterSelectorRuleComponent
     }
 
     return this.tableMetadata.filterFieldDefsByName.get(
-      this.selectedField.field,
+      this.selectedField.field
     );
   }
 
@@ -92,14 +92,14 @@ export class FilterSelectorRuleComponent
     {
       type: FilterRuleType.TEXT,
       operators: [
-        { label: 'je vyplněný', operator: 'isNot', valueHidden: true },
-        { label: 'je prázdný', operator: 'is', valueHidden: true },
-        { label: 'obsahuje', operator: 'contains', default: true },
-        { label: 'neobsahuje', operator: 'notContains' },
-        { label: 'začíná na', operator: 'startsWith' },
-        { label: 'končí na', operator: 'endsWith' },
-        { label: 'je', operator: 'equals' },
-        { label: 'není', operator: 'equals' },
+        { label: "je vyplněný", operator: "isNot", valueHidden: true },
+        { label: "je prázdný", operator: "is", valueHidden: true },
+        { label: "obsahuje", operator: "contains", default: true },
+        { label: "neobsahuje", operator: "notContains" },
+        { label: "začíná na", operator: "startsWith" },
+        { label: "končí na", operator: "endsWith" },
+        { label: "je", operator: "equals" },
+        { label: "není", operator: "equals" },
 
         // in: [String!]
         // notIn: [String!]
@@ -109,7 +109,7 @@ export class FilterSelectorRuleComponent
     {
       type: FilterRuleType.BOOLEAN,
       operators: [
-        { label: 'je', operator: 'is', default: true },
+        { label: "je", operator: "is", default: true },
         // { label: 'není', operator: 'isNot' },
         // TODO: empty
       ],
@@ -117,12 +117,12 @@ export class FilterSelectorRuleComponent
     {
       type: FilterRuleType.NUMBER,
       operators: [
-        { label: 'je rovno', operator: 'equals', default: true },
-        { label: 'není rovno', operator: 'notEquals' },
-        { label: 'větší než', operator: 'gt' },
-        { label: 'větší nebo rovno', operator: 'gte' },
-        { label: 'menší než', operator: 'lt' },
-        { label: 'menší nebo rovno', operator: 'lte' },
+        { label: "je rovno", operator: "equals", default: true },
+        { label: "není rovno", operator: "notEquals" },
+        { label: "větší než", operator: "gt" },
+        { label: "větší nebo rovno", operator: "gte" },
+        { label: "menší než", operator: "lt" },
+        { label: "menší nebo rovno", operator: "lte" },
 
         // between: IntFieldComparisonBetween
         // notBetween: IntFieldComparisonBetween
@@ -134,13 +134,13 @@ export class FilterSelectorRuleComponent
     {
       type: FilterRuleType.DATE,
       operators: [
-        { label: 'dne', operator: 'dateIs', default: true },
-        { label: 'je rovno', operator: 'equals' },
-        { label: 'není rovno', operator: 'notEquals' },
-        { label: 'větší než', operator: 'gt' },
-        { label: 'větší nebo rovno', operator: 'gte' },
-        { label: 'menší než', operator: 'lt' },
-        { label: 'menší nebo rovno', operator: 'lte' },
+        { label: "dne", operator: "dateIs", default: true },
+        { label: "je rovno", operator: "equals" },
+        { label: "není rovno", operator: "notEquals" },
+        { label: "větší než", operator: "gt" },
+        { label: "větší nebo rovno", operator: "gte" },
+        { label: "menší než", operator: "lt" },
+        { label: "menší nebo rovno", operator: "lte" },
 
         // between: DateFieldComparisonBetween
         // notBetween: DateFieldComparisonBetween
@@ -185,8 +185,8 @@ export class FilterSelectorRuleComponent
   FilterRuleType = FilterRuleType;
 
   booleanOptions = [
-    { label: 'Ano', value: true },
-    { label: 'Ne', value: false },
+    { label: "Ano", value: true },
+    { label: "Ne", value: false },
   ];
 
   onChange?: (_: FilterRule) => void;
@@ -253,7 +253,7 @@ export class FilterSelectorRuleComponent
         return;
       }
 
-      if (ruleOperator === 'in' && value == null) {
+      if (ruleOperator === "in" && value == null) {
         this.rule = {};
         return;
       }
@@ -284,19 +284,33 @@ export class FilterSelectorRuleComponent
       return;
     }
 
-    const field = this.fields?.find((f) => f.field === fieldName);
-    if (!field) {
+    const fields = this.fields?.filter((f) => f.field === fieldName);
+    if (fields == null || fields.length === 0) {
       return;
     }
 
+    // test all fields for relation
     const relationOrComparator: FilterComparator | FilterRuleSimple =
       value[fieldName];
-    let comparator: FilterComparator;
-    if (this.isRelationRule(relationOrComparator, field.subField)) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      comparator = relationOrComparator[field.subField!];
-    } else {
+    let comparator: FilterComparator | undefined;
+    let field: FilterRuleField | undefined = undefined;
+    for (const _field of fields) {
+      if (
+        _field.subField != null &&
+        this.isRelationRule(relationOrComparator, _field.subField)
+      ) {
+        comparator = relationOrComparator[_field.subField];
+        field = _field;
+        break;
+      }
+    }
+
+    if (comparator == null) {
       comparator = relationOrComparator;
+    }
+
+    if (field == null) {
+      field = fields[0];
     }
 
     const operator = Object.keys(comparator).shift() as
@@ -308,9 +322,9 @@ export class FilterSelectorRuleComponent
 
     this.selectedFieldPriv = field;
     this.operators =
-      this.fieldOperators.find((f) => f.type === field.type)?.operators ?? [];
+      this.fieldOperators.find((f) => f.type === field?.type)?.operators ?? [];
     this.selectedOperatorPriv = this.operators.find(
-      (o) => o.operator === operator,
+      (o) => o.operator === operator
     );
     if (this.selectedOperatorPriv == null) {
       this.selectedOperatorPriv =
@@ -323,7 +337,7 @@ export class FilterSelectorRuleComponent
 
   isRelationRule(
     rule: FilterComparator | FilterRuleSimple,
-    subfield: string | undefined,
+    subfield: string | undefined
   ): rule is FilterRuleSimple {
     return subfield != null && subfield in rule;
   }
