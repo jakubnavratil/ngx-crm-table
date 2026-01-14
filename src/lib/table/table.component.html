@@ -373,7 +373,7 @@
               ></button>
             </div>
           </td>
-          } @else {
+          } @else if(!col.hidden) {
           <td
             [class]="col.styleClass"
             [class.actions-cell]="col.action != null"
