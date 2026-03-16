@@ -322,6 +322,7 @@
       <ng-template pTemplate="body" let-item let-expanded="expanded">
         <tr
           [pContextMenuRow]="item"
+          [class]="getCustomRowClass(item)"
           [ngClass]="{
             '!bg-primary/10': selectedDetail?.id === item.id,
             'row-expanded': expanded,

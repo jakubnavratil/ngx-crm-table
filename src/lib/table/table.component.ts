@@ -266,6 +266,9 @@ export class TableComponent<T extends IDObject>
   sidebarStyleClass = '';
 
   @Input()
+  rowClass?: (item: T) => string | undefined;
+
+  @Input()
   pagingOptions = [25, 75, 200];
 
   @Input()
@@ -579,6 +582,10 @@ export class TableComponent<T extends IDObject>
 
   getColumnDefByName(name: string) {
     return this.columnDefsByName.get(name);
+  }
+
+  getCustomRowClass(item: T): string {
+    return this.rowClass?.(item) ?? '';
   }
 
   updateTableSort() {
