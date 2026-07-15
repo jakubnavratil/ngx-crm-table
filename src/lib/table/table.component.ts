@@ -26,7 +26,7 @@ import {
   TableRowExpandEvent,
 } from 'primeng/table';
 import { BehaviorSubject, combineLatest, EMPTY, interval } from 'rxjs';
-import { map, scan, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { map, scan, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import {
   FilterGroup,
   FilterRuleField,
@@ -40,6 +40,7 @@ import { CrudTableService } from './crud-table.service';
 import { FilterFieldDirective } from './filter-field.directive';
 import { normalizeFilter } from './filter-utils';
 import { TableMetadata } from './table-metadata';
+import { TABLE_INTERACTION_TRACKER } from './table-tracker';
 import { CustomSort } from './types';
 
 interface IDObject {
@@ -112,6 +113,19 @@ export class TableComponent<T extends IDObject>
   implements OnInit, AfterContentChecked
 {
   tableMetadata = inject(TableMetadata);
+
+  /** Optional analytics sink; no-op when the host app provides no tracker. */
+  private tracker = inject(TABLE_INTERACTION_TRACKER, { optional: true });
+
+  /**
+   * Entity name (e.g. 'orders') used as `item_type` in tracked interactions.
+   * Tables opt into analytics by setting this; leaving it unset stays silent.
+   */
+  @Input() trackingKey?: string;
+
+  // Suppress filter/sort/search events fired while the table initialises;
+  // flipped once the first data load resolves (i.e. after user-driven changes).
+  private trackingReady = false;
 
   @ContentChild('headerLeft') headerLeft: TemplateRef<any> | null = null;
   @ContentChild('header') header: TemplateRef<any> | null = null;
@@ -429,6 +443,11 @@ export class TableComponent<T extends IDObject>
   set filter(v: FilterGroup | undefined) {
     this.filterPriv = v;
     this.refetch(true);
+    if (this.trackingReady) {
+      this.track('filter_apply', {
+        filter_count: this.countFilterRules(v ?? null),
+      });
+    }
   }
 
   private sortPriv?: Required<SortItem>[];
@@ -439,6 +458,12 @@ export class TableComponent<T extends IDObject>
     // console.log('sort set', v);
     this.sortPriv = v;
     this.updateTableSort();
+    if (this.trackingReady && v?.length) {
+      this.track('sort_apply', {
+        sort_field: v[0].field,
+        sort_dir: v[0].direction,
+      });
+    }
   }
 
   tableSort: SortMeta[] = [];
@@ -453,6 +478,9 @@ export class TableComponent<T extends IDObject>
   set fulltext(v: string | undefined | null) {
     this.fulltextPriv = v;
     this.refetch();
+    if (this.trackingReady && v?.trim()) {
+      this.track('search', { search_term: v.trim() });
+    }
   }
 
   isFirstLazyEvent = true;
@@ -562,6 +590,10 @@ export class TableComponent<T extends IDObject>
     });
 
     this.updateTableSort();
+
+    // Enable filter/sort/search tracking only after the initial load, so the
+    // default filter/sort/search values applied on init aren't reported.
+    this.items$.pipe(take(1)).subscribe(() => (this.trackingReady = true));
 
     this.refetchInterval$.subscribe(() => {
       this.service.refetchLast();
@@ -808,9 +840,21 @@ export class TableComponent<T extends IDObject>
     return sum;
   }
 
+  /** Emit a table interaction event; no-op unless trackingKey + tracker are set. */
+  private track(event: string, params: Record<string, unknown> = {}): void {
+    if (!this.tracker || !this.trackingKey) {
+      return;
+    }
+    this.tracker.trackTableEvent(event, {
+      item_type: this.trackingKey,
+      ...params,
+    });
+  }
+
   openNew(): void {
     this.showDetail = true;
     this.selectedDetail = undefined;
+    this.track('open_new');
   }
 
   close(): void {
@@ -820,6 +864,7 @@ export class TableComponent<T extends IDObject>
   editRow(item: T): void {
     this.showDetail = true;
     this.selectedDetail = item;
+    this.track('open_detail', { item_id: item?.id });
   }
 
   resetSelectedRows(): void {
@@ -836,6 +881,7 @@ export class TableComponent<T extends IDObject>
 
   onRowExpanded(event: TableRowExpandEvent) {
     this.onRowExpand.emit(event);
+    this.track('expand_row', { item_id: (event.data as T | undefined)?.id });
   }
 
   onRowCollapsed(event: TableRowCollapseEvent) {

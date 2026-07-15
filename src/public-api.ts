@@ -9,6 +9,7 @@ export * from './lib/table/crud-table.service';
 export * from './lib/table/filter-field.directive';
 export * from './lib/table/table-def.directive';
 export * from './lib/table/table-detail.component';
+export * from './lib/table/table-tracker';
 export * from './lib/table/table.component';
 export * from './lib/table/table.module';
 export * from './lib/table/types';
