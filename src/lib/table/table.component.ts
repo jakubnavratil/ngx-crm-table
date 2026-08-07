@@ -531,24 +531,24 @@ export class TableComponent<T extends IDObject>
 
   public viewMenuItems = [
     {
-      label: 'Možnosti zobrazení',
+      label: $localize`:@@lsTable.view.menu:Možnosti zobrazení`,
       items: [
         {
-          label: 'Boční panel',
+          label: $localize`:@@lsTable.view.sidebar:Boční panel`,
           icon: 'sidebar',
           command: () => {
             this.view = 'sidebar';
           },
         },
         {
-          label: 'Vedle sebe',
+          label: $localize`:@@lsTable.view.splitview:Vedle sebe`,
           icon: 'splitview',
           command: () => {
             this.view = 'splitview';
           },
         },
         {
-          label: 'Vyskakovací okno',
+          label: $localize`:@@lsTable.view.dialog:Vyskakovací okno`,
           icon: 'dialog',
           command: () => {
             this.view = 'dialog';
@@ -894,21 +894,21 @@ export class TableComponent<T extends IDObject>
 
   deleteSelectedRows(): void {
     this.confirmationService.confirm({
-      message: 'Opravdu chcete smazat vybrané záznamy?',
-      header: 'Smazat?',
+      message: $localize`:@@lsTable.deleteSelected.message:Opravdu chcete smazat vybrané záznamy?`,
+      header: $localize`:@@lsTable.deleteRecord.header:Smazat?`,
       icon: 'pi pi-exclamation-triangle text-red-500',
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-text p-button-plain',
-      acceptLabel: 'Smazat',
-      rejectLabel: 'Zrušit',
+      acceptLabel: $localize`:@@lsTable.delete.accept:Smazat`,
+      rejectLabel: $localize`:@@lsTable.delete.reject:Zrušit`,
       defaultFocus: 'reject',
       accept: () => {
         // this.products = this.products.filter(val => !this.selectedProducts.includes(val));
         // this.selectedProducts = null;
         this.messageService.add({
           severity: 'success',
-          summary: 'Successful',
-          detail: 'Záznamy smazány',
+          summary: $localize`:@@lsTable.deleteSelected.successSummary:Smazání`,
+          detail: $localize`:@@lsTable.deleteSelected.successDetail:Záznamy smazány`,
           life: 3000,
         });
       },

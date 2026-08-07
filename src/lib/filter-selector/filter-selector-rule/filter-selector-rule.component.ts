@@ -92,14 +92,14 @@ export class FilterSelectorRuleComponent
     {
       type: FilterRuleType.TEXT,
       operators: [
-        { label: "je vyplněný", operator: "isNot", valueHidden: true },
-        { label: "je prázdný", operator: "is", valueHidden: true },
-        { label: "obsahuje", operator: "contains", default: true },
-        { label: "neobsahuje", operator: "notContains" },
-        { label: "začíná na", operator: "startsWith" },
-        { label: "končí na", operator: "endsWith" },
-        { label: "je", operator: "equals" },
-        { label: "není", operator: "equals" },
+        { label: $localize`:@@lsFilter.op.isNotEmpty:je vyplněný`, operator: "isNot", valueHidden: true },
+        { label: $localize`:@@lsFilter.op.isEmpty:je prázdný`, operator: "is", valueHidden: true },
+        { label: $localize`:@@lsFilter.op.contains:obsahuje`, operator: "contains", default: true },
+        { label: $localize`:@@lsFilter.op.notContains:neobsahuje`, operator: "notContains" },
+        { label: $localize`:@@lsFilter.op.startsWith:začíná na`, operator: "startsWith" },
+        { label: $localize`:@@lsFilter.op.endsWith:končí na`, operator: "endsWith" },
+        { label: $localize`:@@lsFilter.op.is:je`, operator: "equals" },
+        { label: $localize`:@@lsFilter.op.isNot:není`, operator: "equals" },
 
         // in: [String!]
         // notIn: [String!]
@@ -109,7 +109,7 @@ export class FilterSelectorRuleComponent
     {
       type: FilterRuleType.BOOLEAN,
       operators: [
-        { label: "je", operator: "is", default: true },
+        { label: $localize`:@@lsFilter.op.is:je`, operator: "is", default: true },
         // { label: 'není', operator: 'isNot' },
         // TODO: empty
       ],
@@ -117,12 +117,12 @@ export class FilterSelectorRuleComponent
     {
       type: FilterRuleType.NUMBER,
       operators: [
-        { label: "je rovno", operator: "equals", default: true },
-        { label: "není rovno", operator: "notEquals" },
-        { label: "větší než", operator: "gt" },
-        { label: "větší nebo rovno", operator: "gte" },
-        { label: "menší než", operator: "lt" },
-        { label: "menší nebo rovno", operator: "lte" },
+        { label: $localize`:@@lsFilter.op.equals:je rovno`, operator: "equals", default: true },
+        { label: $localize`:@@lsFilter.op.notEquals:není rovno`, operator: "notEquals" },
+        { label: $localize`:@@lsFilter.op.gt:větší než`, operator: "gt" },
+        { label: $localize`:@@lsFilter.op.gte:větší nebo rovno`, operator: "gte" },
+        { label: $localize`:@@lsFilter.op.lt:menší než`, operator: "lt" },
+        { label: $localize`:@@lsFilter.op.lte:menší nebo rovno`, operator: "lte" },
 
         // between: IntFieldComparisonBetween
         // notBetween: IntFieldComparisonBetween
@@ -134,13 +134,13 @@ export class FilterSelectorRuleComponent
     {
       type: FilterRuleType.DATE,
       operators: [
-        { label: "dne", operator: "dateIs", default: true },
-        { label: "je rovno", operator: "equals" },
-        { label: "není rovno", operator: "notEquals" },
-        { label: "větší než", operator: "gt" },
-        { label: "větší nebo rovno", operator: "gte" },
-        { label: "menší než", operator: "lt" },
-        { label: "menší nebo rovno", operator: "lte" },
+        { label: $localize`:@@lsFilter.op.dateIs:dne`, operator: "dateIs", default: true },
+        { label: $localize`:@@lsFilter.op.equals:je rovno`, operator: "equals" },
+        { label: $localize`:@@lsFilter.op.notEquals:není rovno`, operator: "notEquals" },
+        { label: $localize`:@@lsFilter.op.gt:větší než`, operator: "gt" },
+        { label: $localize`:@@lsFilter.op.gte:větší nebo rovno`, operator: "gte" },
+        { label: $localize`:@@lsFilter.op.lt:menší než`, operator: "lt" },
+        { label: $localize`:@@lsFilter.op.lte:menší nebo rovno`, operator: "lte" },
 
         // between: DateFieldComparisonBetween
         // notBetween: DateFieldComparisonBetween
@@ -185,8 +185,8 @@ export class FilterSelectorRuleComponent
   FilterRuleType = FilterRuleType;
 
   booleanOptions = [
-    { label: "Ano", value: true },
-    { label: "Ne", value: false },
+    { label: $localize`:@@lsFilter.bool.yes:Ano`, value: true },
+    { label: $localize`:@@lsFilter.bool.no:Ne`, value: false },
   ];
 
   onChange?: (_: FilterRule) => void;
@@ -218,6 +218,17 @@ export class FilterSelectorRuleComponent
   updateRule(): void {
     const field = this.selectedField;
     const operator = this.selectedOperator;
+
+    // A field can take over rule building entirely - needed whenever the choice
+    // does not map onto a single comparator (a negation, or several conditions
+    // OR-ed together).
+    const buildRule = this.selectedFieldConfig?.valueToRule;
+    if (field && buildRule) {
+      this.rule = (buildRule(this.value, field) ?? {}) as FilterRule;
+      this.onChange?.(this.rule);
+      return;
+    }
+
     let value = this.value;
     value = (
       this.selectedFieldConfig?.valueToRuleValue ?? this.valueToRuleValue
@@ -284,6 +295,13 @@ export class FilterSelectorRuleComponent
       return;
     }
 
+    // Rules built by `valueToRule` need not be keyed by a field name at all
+    // (a group is keyed by "and"/"or"), so ask each configured field whether it
+    // recognises the rule.
+    if (this.restoreFromCustomRule(value)) {
+      return;
+    }
+
     const fields = this.fields?.filter((f) => f.field === fieldName);
     if (fields == null || fields.length === 0) {
       return;
@@ -333,6 +351,39 @@ export class FilterSelectorRuleComponent
     this.valuePriv = (
       this.selectedFieldConfig?.ruleValueToValue ?? this.ruleValueToValue
     )(comparator[operator]);
+  }
+
+  /**
+   * Restores the control from a rule produced by a field's `valueToRule`.
+   *
+   * Returns true when a field claimed the rule.
+   */
+  private restoreFromCustomRule(rule: FilterRule): boolean {
+    for (const [name, config] of this.tableMetadata.filterFieldDefsByName) {
+      if (config.ruleToValue == null) {
+        continue;
+      }
+
+      const value = config.ruleToValue(rule);
+      if (value == null) {
+        continue;
+      }
+
+      const field = this.fields?.find((f) => f.field === name);
+      if (field == null) {
+        continue;
+      }
+
+      this.selectedFieldPriv = field;
+      this.operators =
+        this.fieldOperators.find((f) => f.type === field.type)?.operators ?? [];
+      this.selectedOperatorPriv =
+        this.operators.find((o) => o.default) ?? this.operators[0];
+      this.valuePriv = value;
+      return true;
+    }
+
+    return false;
   }
 
   isRelationRule(

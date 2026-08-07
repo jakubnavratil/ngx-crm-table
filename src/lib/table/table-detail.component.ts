@@ -197,8 +197,8 @@ export abstract class TableDetailComponent<
     if (!this.form.valid) {
       this.messageService.add({
         severity: 'error',
-        summary: 'Chyba',
-        detail: 'Opravte data ve formuláři',
+        summary: $localize`:@@lsTable.error:Chyba`,
+        detail: $localize`:@@lsTable.save.invalidForm:Opravte data ve formuláři`,
         life: 3000,
       });
       return false;
@@ -249,8 +249,8 @@ export abstract class TableDetailComponent<
 
       this.messageService.add({
         severity: 'success',
-        summary: 'Uloženo',
-        detail: 'Záznam uložen',
+        summary: $localize`:@@lsTable.save.successSummary:Uloženo`,
+        detail: $localize`:@@lsTable.save.successDetail:Záznam uložen`,
         life: 3000,
       });
 
@@ -258,8 +258,8 @@ export abstract class TableDetailComponent<
     } catch (e) {
       this.messageService.add({
         severity: 'error',
-        summary: 'Chyba',
-        detail: 'Záznam se nepodařilo uložit',
+        summary: $localize`:@@lsTable.error:Chyba`,
+        detail: $localize`:@@lsTable.save.errorDetail:Záznam se nepodařilo uložit`,
         life: 3000,
       });
       console.log(e);
@@ -277,13 +277,13 @@ export abstract class TableDetailComponent<
     const detail = this.detail;
 
     this.confirmationService.confirm({
-      message: 'Opravdu chcete smazat záznam?',
-      header: 'Smazat?',
+      message: $localize`:@@lsTable.deleteRecord.message:Opravdu chcete smazat záznam?`,
+      header: $localize`:@@lsTable.deleteRecord.header:Smazat?`,
       icon: 'pi pi-exclamation-triangle text-red-500',
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-text p-button-plain',
-      acceptLabel: 'Smazat',
-      rejectLabel: 'Zrušit',
+      acceptLabel: $localize`:@@lsTable.delete.accept:Smazat`,
+      rejectLabel: $localize`:@@lsTable.delete.reject:Zrušit`,
       defaultFocus: 'reject',
       accept: async () => {
         const result = await this.service.delete({
@@ -296,15 +296,15 @@ export abstract class TableDetailComponent<
           }
           this.messageService.add({
             severity: 'success',
-            summary: 'Smazání',
-            detail: 'Záznam smazán',
+            summary: $localize`:@@lsTable.delete.successSummary:Smazání`,
+            detail: $localize`:@@lsTable.delete.successDetail:Záznam smazán`,
             life: 3000,
           });
         } else {
           this.messageService.add({
             severity: 'error',
-            summary: 'Chyba',
-            detail: 'Záznam se nepodařilo smazat',
+            summary: $localize`:@@lsTable.error:Chyba`,
+            detail: $localize`:@@lsTable.delete.errorDetail:Záznam se nepodařilo smazat`,
             life: 3000,
           });
         }

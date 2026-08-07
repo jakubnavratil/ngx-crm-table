@@ -43,6 +43,7 @@
                 pInputText
                 [(ngModel)]="value"
                 placeholder="Text"
+                i18n-placeholder
               />
             }
           }
@@ -56,11 +57,19 @@
           }
           @case (FilterRuleType.NUMBER) {
             @if (!selectedOperator?.valueHidden) {
-              <p-inputNumber [(ngModel)]="value" placeholder="Číslo" />
+              <p-inputNumber
+                [(ngModel)]="value"
+                placeholder="Číslo"
+                i18n-placeholder
+              />
             }
           }
           @case (FilterRuleType.DATE) {
-            <p-calendar [(ngModel)]="value" placeholder="Datum" />
+            <p-calendar
+              [(ngModel)]="value"
+              placeholder="Datum"
+              i18n-placeholder
+            />
           }
           @default {
             Chybějící implementace.
