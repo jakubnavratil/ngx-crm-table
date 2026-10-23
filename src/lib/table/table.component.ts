@@ -758,8 +758,12 @@ export class TableComponent<T extends IDObject>
     }
 
     const event = this.lastEvent;
-    const customSort: CustomSort[] =
-      this.sort?.map((s) => ({ field: s.field, order: s.direction })) ?? [];
+    // Without a user sort, request the backendDefaultSort the header shows.
+    const customSort: CustomSort[] = (
+      this.sort?.length ? this.sort : this.backendDefaultSort
+    )
+      .filter((s) => s.field != null)
+      .map((s) => ({ field: s.field!, order: s.direction }));
 
     if (!customSort.length) {
       customSort.push({
